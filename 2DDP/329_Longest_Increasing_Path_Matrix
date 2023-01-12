@@ -1,0 +1,35 @@
+class Solution:
+    # Runtime: O(mn) Space O(mn)
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        # longest path at matrix (i, j) is
+        # [length longest path at matrix(i+1,j), (i-1, j), (i, j-1), (i, j+1)] + 1
+        # if the length of the longest path is recorded, we dont need to compute it
+        # otherwise, we need to compute it
+
+        row = len(matrix)
+        col = len(matrix[0])
+        dp = [[-1] * col for _ in range(row)]
+        maxLength = 1
+        for i in range(0, row):
+            for j in range(0, col):
+                maxLength = max(self.computeLength(i,j,matrix, dp), maxLength)
+        return maxLength
+        
+
+    def computeLength(self, i:int, j:int, matrix, dp):
+        if(dp[i][j] != -1):
+            return dp[i][j]
+        else:
+            maxLength = 1
+            if(i-1 >= 0 and matrix[i-1][j] > matrix[i][j]):
+                dp[i][j] = max(self.computeLength(i-1, j, matrix, dp) + 1, dp[i][j])
+            if(i+1 < len(matrix) and matrix[i+1][j] > matrix[i][j]):
+                dp[i][j] = max(self.computeLength(i+1, j, matrix, dp) + 1, dp[i][j])
+            if(j-1 >= 0 and matrix[i][j-1] > matrix[i][j]):
+                dp[i][j] = max(self.computeLength(i, j-1, matrix, dp) + 1, dp[i][j])
+            if(j+1 < len(matrix[0]) and matrix[i][j+1] > matrix[i][j]):
+                dp[i][j] = max(self.computeLength(i, j+1, matrix, dp) + 1, dp[i][j])
+            dp[i][j] = max(dp[i][j], 1)
+            return dp[i][j]
+
+                
